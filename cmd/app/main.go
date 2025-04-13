@@ -7,10 +7,10 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 	"github.com/romeolacerda/go-gateway-api/internal/repository"
 	"github.com/romeolacerda/go-gateway-api/internal/service"
 	"github.com/romeolacerda/go-gateway-api/internal/web/server"
-	_ "github.com/lib/pq"
 )
 
 func getEnv(key, defaultValue string) string {
@@ -44,8 +44,11 @@ func main() {
 	accountRepository := repository.NewAccountRepository(db)
 	accountService := service.NewAccountService(accountRepository)
 
+	invoiceRepository := repository.NewInvoiceRepository(db)
+	invoiceService := service.NewInvoiceService(invoiceRepository, *accountService)
+
 	port := getEnv("HTTP_PORT", "8080")
-	srv := server.NewServer(accountService, port)
+	srv := server.NewServer(accountService, invoiceService, port)
 	srv.ConfigureRoutes()
 
 	if err := srv.Start(); err != nil {
