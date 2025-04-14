@@ -45,6 +45,7 @@ func (h *AccountHandler) Get(w http.ResponseWriter, r *http.Request) {
 	output, err := h.accountService.FindByAPIKey(apiKey)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")

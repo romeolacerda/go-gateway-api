@@ -13,12 +13,13 @@ const (
 )
 
 type CreateInvoiceInput struct {
-	APIKey         string  `json:"api_key"`
+	APIKey         string
 	Amount         float64 `json:"amount"`
 	Description    string  `json:"description"`
 	PaymentType    string  `json:"payment_type"`
 	CardNumber     string  `json:"card_number"`
 	CVV            string  `json:"cvv"`
+	ExpiryMonth    int     `json:"expiry_month"`
 	ExpiryYear     int     `json:"expiry_year"`
 	CardholderName string  `json:"cardholder_name"`
 }
@@ -35,19 +36,26 @@ type InvoiceOutput struct {
 	UpdatedAt      time.Time `json:"updated_at"`
 }
 
-func ToInvoice(input *CreateInvoiceInput, accountID string) (*domain.Invoice, error) {
+func ToInvoice(input CreateInvoiceInput, accountID string) (*domain.Invoice, error) {
 	card := domain.CreditCard{
-		Number:        input.CardNumber,
-		CVV:           input.CVV,
-		ExpiryYear:    input.ExpiryYear,
-		CarholderName: input.CardholderName,
+		Number:         input.CardNumber,
+		CVV:            input.CVV,
+		ExpiryMonth:    input.ExpiryMonth,
+		ExpiryYear:     input.ExpiryYear,
+		CardholderName: input.CardholderName,
 	}
 
-	return domain.NewInvoice(accountID, input.Amount, input.PaymentType, input.Description, card)
+	return domain.NewInvoice(
+		accountID,
+		input.Amount,
+		input.Description,
+		input.PaymentType,
+		card,
+	)
 }
 
-func FromInvoice(invoice *domain.Invoice) InvoiceOutput {
-	return InvoiceOutput{
+func FromInvoice(invoice *domain.Invoice) *InvoiceOutput {
+	return &InvoiceOutput{
 		ID:             invoice.ID,
 		AccountID:      invoice.AccountID,
 		Amount:         invoice.Amount,

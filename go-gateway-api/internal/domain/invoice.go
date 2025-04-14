@@ -28,13 +28,14 @@ type Invoice struct {
 }
 
 type CreditCard struct {
-	Number        string
-	CVV           string
-	ExpiryYear    int
-	CarholderName string
+	Number         string
+	CVV            string
+	ExpiryMonth    int
+	ExpiryYear     int
+	CardholderName string
 }
 
-func NewInvoice(accountId string, amount float64, description string, paymentTupe string, card CreditCard) (*Invoice, error) {
+func NewInvoice(accountID string, amount float64, description string, paymentType string, card CreditCard) (*Invoice, error) {
 	if amount <= 0 {
 		return nil, ErrInvalidAmount
 	}
@@ -43,23 +44,25 @@ func NewInvoice(accountId string, amount float64, description string, paymentTup
 
 	return &Invoice{
 		ID:             uuid.New().String(),
-		AccountID:      accountId,
+		AccountID:      accountID,
 		Amount:         amount,
-		Description:    description,
 		Status:         StatusPending,
-		PaymentType:    paymentTupe,
+		Description:    description,
+		PaymentType:    paymentType,
 		CardLastDigits: lastDigits,
 		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
 	}, nil
 }
 
-func (i *Invoice) Proccess() error {
+func (i *Invoice) Process() error {
 	if i.Amount > 10000 {
 		return nil
 	}
 
 	randomSource := rand.New(rand.NewSource(time.Now().Unix()))
 	var newStatus Status
+
 	if randomSource.Float64() <= 0.7 {
 		newStatus = StatusApproved
 	} else {

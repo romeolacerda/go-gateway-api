@@ -15,7 +15,7 @@ type Account struct {
 	Email     string
 	APIKey    string
 	Balance   float64
-	mu sync.RWMutex
+	mu        sync.RWMutex
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -28,14 +28,15 @@ func generateAPIKey() string{
 
 func NewAccount(name, email string) *Account{
 	account := &Account{
-		ID: uuid.New().String(),
-		Name: name,
-		Email: email,
-		APIKey: generateAPIKey(),
-		Balance: 0,
+		ID:        uuid.New().String(),
+		Name:      name,
+		Email:     email,
+		Balance:   0,
+		APIKey:    generateAPIKey(),
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
+
 	return account
 }
 
@@ -44,4 +45,4 @@ func (a *Account) AddBalance(amount float64){
 	defer a.mu.Unlock()
 	a.Balance += amount
 	a.UpdatedAt = time.Now()
-  }
+}

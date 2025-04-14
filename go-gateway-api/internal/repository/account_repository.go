@@ -18,9 +18,9 @@ func NewAccountRepository(db *sql.DB) *AccountRepository {
 func (r *AccountRepository) Save(account *domain.Account) error {
 
 	stmt, err := r.db.Prepare(`
-	INSERT INTO accounts (id, name, email, api_key, balance, created_at, updated_at)
-	VALUES ($1, $2, $3, $4, $5, $6, $7)
-	`)
+        INSERT INTO accounts (id, name, email, api_key, balance, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `)
 	if err != nil {
 		return err
 	}
@@ -47,10 +47,18 @@ func (r *AccountRepository) FindByAPIKey(apiKey string) (*domain.Account, error)
 	var createdAt, updatedAt time.Time
 
 	err := r.db.QueryRow(`
-	SELECT id, name, email, api_key, balance, created_at, updated_at
-	FROM accounts WHERE api_key = $1`, apiKey).
-		Scan(&account.ID, &account.Name, &account.Email, &account.APIKey,
-			&account.Balance, &createdAt, &updatedAt)
+		SELECT id, name, email, api_key, balance, created_at, updated_at
+		FROM accounts
+		WHERE api_key = $1
+	`, apiKey).Scan(
+		&account.ID,
+		&account.Name,
+		&account.Email,
+		&account.APIKey,
+		&account.Balance,
+		&createdAt,
+		&updatedAt,
+	)
 	if err == sql.ErrNoRows {
 		return nil, domain.ErrAccountNotFound
 	}
@@ -63,15 +71,23 @@ func (r *AccountRepository) FindByAPIKey(apiKey string) (*domain.Account, error)
 	return &account, nil
 }
 
-func (r *AccountRepository) FindById(id string) (*domain.Account, error) {
+func (r *AccountRepository) FindByID(id string) (*domain.Account, error) {
 	var account domain.Account
 	var createdAt, updatedAt time.Time
 
 	err := r.db.QueryRow(`
-	SELECT id, name, email, api_key, balance, created_at, updated_at
-	FROM accounts WHERE api_key = $1`, id).
-		Scan(&account.ID, &account.Name, &account.Email, &account.APIKey,
-			&account.Balance, &createdAt, &updatedAt)
+		SELECT id, name, email, api_key, balance, created_at, updated_at
+		FROM accounts
+		WHERE id = $1
+	`, id).Scan(
+		&account.ID,
+		&account.Name,
+		&account.Email,
+		&account.APIKey,
+		&account.Balance,
+		&createdAt,
+		&updatedAt,
+	)
 	if err == sql.ErrNoRows {
 		return nil, domain.ErrAccountNotFound
 	}
@@ -103,10 +119,10 @@ func (r *AccountRepository) UpdateBalance(account *domain.Account) error {
 	}
 
 	_, err = tx.Exec(`
-		UPDATE accounts
-		SET balance = $1, update_at = $2
-		WHERE id = $3
-	`, currentBalance+account.Balance, time.Now(), account.ID)
+        UPDATE accounts
+        SET balance = $1, updated_at = $2
+        WHERE id = $3
+    `, account.Balance, time.Now(), account.ID)
 	if err != nil {
 		return err
 	}

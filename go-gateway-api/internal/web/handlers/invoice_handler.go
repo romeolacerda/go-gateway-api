@@ -41,20 +41,20 @@ func (h *InvoiceHandler) Create(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(output)
 }
 
-func (h *InvoiceHandler) GetById(w http.ResponseWriter, r *http.Request) {
+func (h *InvoiceHandler) GetByID(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if id == "" {
-		http.Error(w, "id is required", http.StatusBadRequest)
+		http.Error(w, "ID is required", http.StatusBadRequest)
 		return
 	}
 
 	apiKey := r.Header.Get("X-API-KEY")
 	if apiKey == "" {
-		http.Error(w, "API Key is required", http.StatusBadRequest)
+		http.Error(w, "X-API-KEY is required", http.StatusBadRequest)
 		return
 	}
 
-	output, err := h.service.GetById(id, apiKey)
+	output, err := h.service.GetByID(id, apiKey)
 	if err != nil {
 		switch err {
 		case domain.ErrInvoiceNotFound:
@@ -68,12 +68,11 @@ func (h *InvoiceHandler) GetById(w http.ResponseWriter, r *http.Request) {
 			return
 		default:
 			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
-		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(output)
 }
 

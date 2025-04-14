@@ -15,19 +15,33 @@ func NewInvoiceRepository(db *sql.DB) *InvoiceRepository {
 }
 
 func (r *InvoiceRepository) Save(invoice *domain.Invoice) error {
-	_, err := r.db.Exec("INSERT INTO invoices (id, account_id, amount, status, description, payment_type, card_last_digits, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", invoice.ID, invoice.AccountID, invoice.Amount, invoice.Status, invoice.Description, invoice.PaymentType, invoice.CardLastDigits, invoice.CreatedAt, invoice.CreatedAt)
+	_, err := r.db.Exec(
+		"INSERT INTO invoices (id, account_id, amount, status, description, payment_type, card_last_digits, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)",
+		invoice.ID, invoice.AccountID, invoice.Amount, invoice.Status, invoice.Description, invoice.PaymentType, invoice.CardLastDigits, invoice.CreatedAt, invoice.UpdatedAt,
+	)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r *InvoiceRepository) FindById(id string) (*domain.Invoice, error) {
+func (r *InvoiceRepository) FindByID(id string) (*domain.Invoice, error){
 	var invoice domain.Invoice
 	err := r.db.QueryRow(`
-	SELECT id, account_id, amount, status, description, payment_type, card_last_digits, created_at, updated_at FROM invoices 
-	WHERE id = $1`,
-		id).Scan(&invoice.ID, &invoice.AccountID, &invoice.Amount, &invoice.Status, &invoice.Description, &invoice.PaymentType, &invoice.CardLastDigits, &invoice.CreatedAt, &invoice.UpdatedAt)
+		SELECT id, account_id, amount, status, description, payment_type, card_last_digits, created_at, updated_at
+		FROM invoices
+		WHERE id = $1
+	`, id).Scan(
+		&invoice.ID,
+		&invoice.AccountID,
+		&invoice.Amount,
+		&invoice.Status,
+		&invoice.Description,
+		&invoice.PaymentType,
+		&invoice.CardLastDigits,
+		&invoice.CreatedAt,
+		&invoice.UpdatedAt,
+	)
 
 	if err == sql.ErrNoRows {
 		return nil, domain.ErrInvoiceNotFound
@@ -40,8 +54,12 @@ func (r *InvoiceRepository) FindById(id string) (*domain.Invoice, error) {
 	return &invoice, nil
 }
 
-func (r *InvoiceRepository) FindByAccountId(AccountID string) ([]*domain.Invoice, error) {
-	rows, err := r.db.Query("SELECT id, account_id, amount, status, description, payment_type, card_last_digits, created_at, updated_at FROM invoices WHERE account_id = $1", AccountID)
+func (r *InvoiceRepository) FindByAccountID(accountID string) ([]*domain.Invoice, error) {
+	rows, err := r.db.Query(`
+		SELECT id, account_id, amount, status, description, payment_type, card_last_digits, created_at, updated_at
+		FROM invoices
+		WHERE account_id = $1
+	`, accountID)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +68,9 @@ func (r *InvoiceRepository) FindByAccountId(AccountID string) ([]*domain.Invoice
 	var invoices []*domain.Invoice
 	for rows.Next() {
 		var invoice domain.Invoice
-		err := rows.Scan(&invoice.ID, &invoice.AccountID, &invoice.Amount, &invoice.Status, &invoice.Description, &invoice.PaymentType, &invoice.CardLastDigits, &invoice.CreatedAt, &invoice.UpdatedAt)
+		err := rows.Scan(
+			&invoice.ID, &invoice.AccountID, &invoice.Amount, &invoice.Status, &invoice.Description, &invoice.PaymentType, &invoice.CardLastDigits, &invoice.CreatedAt, &invoice.UpdatedAt,
+		)
 		if err != nil {
 			return nil, err
 		}
@@ -63,9 +83,7 @@ func (r *InvoiceRepository) FindByAccountId(AccountID string) ([]*domain.Invoice
 func (r *InvoiceRepository) UpdateStatus(invoice *domain.Invoice) error {
 	rows, err := r.db.Exec(
 		"UPDATE invoices SET status = $1, updated_at = $2 WHERE id = $3",
-		invoice.Status,
-		invoice.UpdatedAt,
-		invoice.ID,
+		invoice.Status, invoice.UpdatedAt, invoice.ID,
 	)
 	if err != nil {
 		return err

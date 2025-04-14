@@ -8,13 +8,14 @@ POST {{baseUrl}}/accounts
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "john@doe.com"
+    "name": "John Doe",
+    "email": "john@aaaa.com"
 }
 
 ### Obter dados da conta
 GET {{baseUrl}}/accounts
 X-API-Key: {{apiKey}}
+
 
 ### Criar uma nova fatura
 # @name createInvoice
@@ -23,14 +24,14 @@ Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 {
-  "amount": 200.50,
-  "description": "Teste de fatura",
-  "payment_type": "credit_card",
-  "card_number": "4111111111111111",
-  "cvv": "123",
-  "expiry_month": 12,
-  "expiry_year": 2025,
-  "cardholder_name": "John Doe"
+    "amount": 100.50,
+    "description": "Teste de fatura",
+    "payment_type": "credit_card",
+    "card_number": "4111111111111111",
+    "cvv": "123",
+    "expiry_month": 12,
+    "expiry_year": 2025,
+    "cardholder_name": "John Doe"
 }
 
 ### Obter uma fatura específica
@@ -44,13 +45,12 @@ Content-Type: application/json
 X-API-Key: {{apiKey}}
 
 {
-  "amount": 15000,
-  "description": "Teste de fatura com valor alto",
-  "payment_type": "credit_card",
-  "card_number": "4111111111111111",
-  "cvv": "123",
-  "expiry_month": 12,
-  "expiry_year": 2025,
-  "cardholder_name": "John Doe"
-}
-
+    "amount": 15000,
+    "description": "Teste de fatura com valor alto",
+    "payment_type": "credit_card",
+    "card_number": "4111111111111111",
+    "cvv": "123",
+    "expiry_month": 12,
+    "expiry_year": 2025,
+    "cardholder_name": "John Doe"
+} 

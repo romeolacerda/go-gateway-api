@@ -27,22 +27,19 @@ func NewServer(accountService *service.AccountService, invoiceService *service.I
 }
 
 func (s *Server) ConfigureRoutes() {
-	AccountHandler := handlers.NewAccountHandler(s.accountService)
-	Invoicehandler := handlers.NewInvoiceHandler(s.invoiceService)
-	AuthMiddleware := middleware.NewAuthMiddleware(s.accountService)
+	accountHandler := handlers.NewAccountHandler(s.accountService)
+	invoiceHandler := handlers.NewInvoiceHandler(s.invoiceService)
+	authMiddleware := middleware.NewAuthMiddleware(s.accountService)
 
-	s.router.Post("/accounts", AccountHandler.Create)
-	s.router.Get("/accounts", AccountHandler.Get)
+	s.router.Post("/accounts", accountHandler.Create)
+	s.router.Get("/accounts", accountHandler.Get)
 
-	s.router.Group((func(r chi.Router) {
-
-		r.Use(AuthMiddleware.Authenticate)
-
-		s.router.Post("/invoice", Invoicehandler.Create)
-		s.router.Get("/invoice/{id}", Invoicehandler.GetById)
-		s.router.Get("/invoice", Invoicehandler.ListByAccount)
-	}))
-
+	s.router.Group(func(r chi.Router) {
+		r.Use(authMiddleware.Authenticate)
+		s.router.Post("/invoice", invoiceHandler.Create)
+		s.router.Get("/invoice/{id}", invoiceHandler.GetByID)
+		s.router.Get("/invoice", invoiceHandler.ListByAccount)
+	})
 }
 
 func (s *Server) Start() error {
