@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/romeolacerda/go-gateway-api/internal/dto"
-	"github.com/romeolacerda/go-gateway-api/internal/service"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/dto"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/service"
 )
 
 type AccountHandler struct {

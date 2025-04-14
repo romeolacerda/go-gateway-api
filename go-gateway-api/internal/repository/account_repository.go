@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/romeolacerda/go-gateway-api/internal/domain"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/domain"
 )
 
 type AccountRepository struct {
@@ -101,7 +101,6 @@ func (r *AccountRepository) UpdateBalance(account *domain.Account) error {
 	if err != nil {
 		return err
 	}
-
 
 	_, err = tx.Exec(`
 		UPDATE accounts

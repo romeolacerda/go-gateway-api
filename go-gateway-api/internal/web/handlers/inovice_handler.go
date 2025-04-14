@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/romeolacerda/go-gateway-api/internal/domain"
-	"github.com/romeolacerda/go-gateway-api/internal/dto"
-	"github.com/romeolacerda/go-gateway-api/internal/service"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/domain"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/dto"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/service"
 )
 
 type InvoiceHandler struct {
@@ -99,4 +99,3 @@ func (h *InvoiceHandler) ListByAccount(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(output)
 }
-

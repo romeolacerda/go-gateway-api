@@ -3,7 +3,7 @@ package repository
 import (
 	"database/sql"
 
-	"github.com/romeolacerda/go-gateway-api/internal/domain"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/domain"
 )
 
 type InvoiceRepository struct {
@@ -41,7 +41,7 @@ func (r *InvoiceRepository) FindById(id string) (*domain.Invoice, error) {
 }
 
 func (r *InvoiceRepository) FindByAccountId(AccountID string) ([]*domain.Invoice, error) {
-	rows, err := r.db.Query("SELECT id, account_id, amount, status, description, payment_type, card_last_digits, created_at, updtated_at FROM invoices WHERE account_id = $1", AccountID)
+	rows, err := r.db.Query("SELECT id, account_id, amount, status, description, payment_type, card_last_digits, created_at, updated_at FROM invoices WHERE account_id = $1", AccountID)
 	if err != nil {
 		return nil, err
 	}
@@ -78,6 +78,6 @@ func (r *InvoiceRepository) UpdateStatus(invoice *domain.Invoice) error {
 	if rowsAffected == 0 {
 		return domain.ErrInvoiceNotFound
 	}
-	
+
 	return nil
 }

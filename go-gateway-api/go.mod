@@ -1,4 +1,4 @@
-module github.com/romeolacerda/go-gateway-api
+module github.com/romeolacerda/payment-gateway/go-gateway-api
 
 go 1.24.1
 

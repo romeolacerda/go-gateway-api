@@ -3,7 +3,7 @@ package dto
 import (
 	"time"
 
-	"github.com/romeolacerda/go-gateway-api/internal/domain"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/domain"
 )
 
 const (

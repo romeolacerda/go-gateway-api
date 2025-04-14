@@ -3,7 +3,7 @@ package dto
 import (
 	"time"
 
-	"github.com/romeolacerda/go-gateway-api/internal/domain"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/domain"
 )
 
 type CreateAccountInput struct {
@@ -25,13 +25,13 @@ func ToAccount(input CreateAccountInput) *domain.Account {
 	return domain.NewAccount(input.Name, input.Email)
 }
 
-func FromAccount(account *domain.Account) AccountOutput{
+func FromAccount(account *domain.Account) AccountOutput {
 	return AccountOutput{
-		ID: account.ID,
-		Name: account.Name,
-		Email: account.Email,
-		APIKey: account.APIKey,
-		Balance: account.Balance,
+		ID:        account.ID,
+		Name:      account.Name,
+		Email:     account.Email,
+		APIKey:    account.APIKey,
+		Balance:   account.Balance,
 		CreatedAt: account.CreatedAt,
 		UpdatedAt: account.UpdatedAt,
 	}

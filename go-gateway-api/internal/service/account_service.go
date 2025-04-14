@@ -1,19 +1,19 @@
 package service
 
 import (
-	"github.com/romeolacerda/go-gateway-api/internal/domain"
-	"github.com/romeolacerda/go-gateway-api/internal/dto"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/domain"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/dto"
 )
 
 type AccountService struct {
 	repository domain.AccountRepository
 }
 
-func NewAccountService(repository domain.AccountRepository) *AccountService{
+func NewAccountService(repository domain.AccountRepository) *AccountService {
 	return &AccountService{repository: repository}
 }
 
-func (s *AccountService) CreateAccount(input dto.CreateAccountInput) (*dto.AccountOutput, error){
+func (s *AccountService) CreateAccount(input dto.CreateAccountInput) (*dto.AccountOutput, error) {
 	account := dto.ToAccount(input)
 
 	existingAccount, err := s.repository.FindByAPIKey(account.APIKey)
@@ -34,7 +34,7 @@ func (s *AccountService) CreateAccount(input dto.CreateAccountInput) (*dto.Accou
 	return &output, nil
 }
 
-func (s *AccountService) UpdateBalance(apiKey string, amount float64) (*dto.AccountOutput, error){
+func (s *AccountService) UpdateBalance(apiKey string, amount float64) (*dto.AccountOutput, error) {
 	account, err := s.repository.FindByAPIKey(apiKey)
 	if err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (s *AccountService) UpdateBalance(apiKey string, amount float64) (*dto.Acco
 	return &output, nil
 }
 
-func (s *AccountService) FindByAPIKey(apiKey string) (*dto.AccountOutput, error){
+func (s *AccountService) FindByAPIKey(apiKey string) (*dto.AccountOutput, error) {
 	account, err := s.repository.FindByAPIKey(apiKey)
 	if err != nil {
 		return nil, err
@@ -59,7 +59,7 @@ func (s *AccountService) FindByAPIKey(apiKey string) (*dto.AccountOutput, error)
 	return &output, nil
 }
 
-func (s *AccountService) FindById(id string) (*dto.AccountOutput, error){
+func (s *AccountService) FindById(id string) (*dto.AccountOutput, error) {
 	account, err := s.repository.FindById(id)
 	if err != nil {
 		return nil, err

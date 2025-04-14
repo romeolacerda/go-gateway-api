@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/romeolacerda/go-gateway-api/internal/service"
-	"github.com/romeolacerda/go-gateway-api/internal/web/handlers"
-	"github.com/romeolacerda/go-gateway-api/internal/web/middleware"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/service"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/web/handlers"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/web/middleware"
 )
 
 type Server struct {

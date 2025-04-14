@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/romeolacerda/go-gateway-api/internal/domain"
-	"github.com/romeolacerda/go-gateway-api/internal/dto"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/domain"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/dto"
 )
 
 type InvoiceService struct {

@@ -8,9 +8,9 @@ import (
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-	"github.com/romeolacerda/go-gateway-api/internal/repository"
-	"github.com/romeolacerda/go-gateway-api/internal/service"
-	"github.com/romeolacerda/go-gateway-api/internal/web/server"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/repository"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/service"
+	"github.com/romeolacerda/payment-gateway/go-gateway-api/internal/web/server"
 )
 
 func getEnv(key, defaultValue string) string {
