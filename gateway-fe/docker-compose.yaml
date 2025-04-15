@@ -1,0 +1,16 @@
+services:
+
+  nextjs:
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/home/node/app
+    networks:
+      - gateway-network
+
+      
+networks:
+  gateway-network:
+    external: true
+    name: gateway-network

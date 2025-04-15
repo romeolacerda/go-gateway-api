@@ -48,7 +48,7 @@ Funcionalidades pendentes:
 
 1. Clone o repositório:
 ```bash
-git clone https://github.com/devfullcycle/imersao22.git
+git clone https://github.com/romeolacerda/payment-gateway
 cd imersao22/go-gateway
 ```
 
@@ -67,7 +67,12 @@ docker compose up -d
 migrate -path db/migrations -database "postgresql://postgres:postgres@localhost:5432/gateway?sslmode=disable" up
 ```
 
-5. Execute a aplicação:
+5. Acesse o container do app:
+```bash
+docker compose exec app sh
+```
+
+6. Execute a aplicação:
 ```bash
 go run cmd/app/main.go
 ```

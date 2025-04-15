@@ -6,11 +6,20 @@ services:
       - 3001:3000
     volumes:
       - .:/home/node/app
-
-  db:
+    networks:
+      - gateway-network
+    
+  nestjs-db:
     image: postgres:16-alpine
     environment:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: mydb
     ports:
       - 5433:5432
+    networks:
+      - gateway-network
+      
+networks:
+  gateway-network:
+    external: true
+    name: gateway-network

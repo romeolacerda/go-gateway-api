@@ -9,7 +9,7 @@ import Link from "next/link";
 export async function getInvoices() {
   const cookiesStore = await cookies();
   const apiKey = cookiesStore.get("apiKey")?.value;
-  const response = await fetch("http://localhost:8080/invoice", {
+  const response = await fetch("http://host.docker.internal:8080/invoice", {
     headers: {
       "X-API-KEY": apiKey as string,
     },
@@ -121,6 +121,7 @@ export async function InvoiceList() {
             </tr>
           </thead>
           <tbody>
+          {/* @ts-expect-error invoice without type*/}
             {invoices.map((invoice) => (
               <tr key={invoice.id} className="border-b border-gray-800">
                 <td className="py-4 px-4 text-white">{invoice.id}</td>

@@ -1,4 +1,26 @@
 services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    environment:
+      - DB_HOST=db
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=gateway
+      - DB_PORT=5432
+      - KAFKA_BROKER=kafka:29092
+    networks:
+      - gateway-network
+    depends_on:
+      db:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+    restart: unless-stopped
+
   db:
     image: postgres:16-alpine
     ports:
@@ -9,6 +31,8 @@ services:
       - POSTGRES_DB=gateway
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - gateway-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -34,6 +58,8 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
       KAFKA_LOG_DIRS: '/tmp/kraft-combined-logs'
       CLUSTER_ID: 'MkU3OEVBNTcwNTJENDM2Qk'
+    networks:
+      - gateway-network
     healthcheck:
       test: kafka-topics --bootstrap-server kafka:29092 --list
       interval: 30s
@@ -46,6 +72,8 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
+    networks:
+      - gateway-network
     command: >
       bash -c "
         echo 'Iniciando criação dos tópicos...' &&
@@ -55,3 +83,8 @@ services:
 
 volumes:
   postgres_data:
+
+networks:
+  gateway-network:
+    name: gateway-network
+    driver: bridge

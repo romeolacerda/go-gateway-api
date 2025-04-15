@@ -1,24 +1,11 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { getInvoice } from "@/lib/invoice";
 import { ArrowLeft, Download } from "lucide-react";
-import { cookies } from "next/headers";
 import Link from "next/link";
+import { StatusBadge } from "../../../components/StatusBadge";
 
-export async function getInvoice(id: string) {
-  const cookiesStore = await cookies();
-  const apiKey = cookiesStore.get("apiKey")?.value;
-  const response = await fetch(`http://localhost:8080/invoice/${id}`, {
-    headers: {
-      "X-API-KEY": apiKey as string,
-    },
-    cache: 'force-cache',
-    next: {
-      tags: [`accounts/${apiKey}/invoices/${id}`]
-    }
-  });
-  return response.json();
-}
+
 
 export default async function InvoiceDetailsPage({
   params,
@@ -44,12 +31,7 @@ export default async function InvoiceDetailsPage({
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-white">Fatura {id}</h1>
-            <Badge
-              variant="outline"
-              className="bg-green-500/20 text-green-500 hover:bg-green-500/20"
-            >
-              Aprovado
-            </Badge>
+            <StatusBadge status={invoiceData.status} />
           </div>
           <p className="text-gray-400">
             Criada em {new Date(invoiceData.created_at).toLocaleDateString()}
@@ -128,3 +110,5 @@ export default async function InvoiceDetailsPage({
     </div>
   );
 }
+
+//route handler /api/invoices/[id]/revalidate revalidatePath('....')

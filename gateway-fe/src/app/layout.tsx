@@ -16,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning>
-      <body suppressHydrationWarning className={`${inter.className} bg-[#1a2332] min-h-screen`}>
+    <html lang="pt-BR">
+      <body className={`${inter.className} bg-[#1a2332] min-h-screen`}>
         <Header />
         <main className="container mx-auto py-4">{children}</main>
         <footer className="py-4 text-center text-sm text-gray-400">
