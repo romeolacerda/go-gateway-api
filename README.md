@@ -1,72 +1,70 @@
-# Gateway de Pagamento - Imersão Full Cycle
+# Payment-Gateway
 
-## Sobre o Projeto
+## About the Project
 
-Este projeto foi desenvolvido durante a [Imersão Full Stack & Full Cycle](https://imersao.fullcycle.com.br/evento/), onde construímos um Gateway de Pagamento completo utilizando arquitetura de microsserviços.
+The goal is to demonstrate the construction of a modern distributed system with separation of concerns, asynchronous communication, and real-time fraud analysis.
 
-O objetivo é demonstrar a construção de um sistema distribuído moderno, com separação de responsabilidades, comunicação assíncrona e análise de fraudes em tempo real.
+## Architecture
 
-## Arquitetura
+[View the complete architecture here](https://link.excalidraw.com/readonly/Nrz6WjyTrn7IY8ZkrZHy)
 
-[Visualize a arquitetura completa aqui](https://link.excalidraw.com/readonly/Nrz6WjyTrn7IY8ZkrZHy)
-
-### Componentes do Sistema
+### System Components
 
 - **Frontend (Next.js)**
-  - Interface do usuário para gerenciamento de contas e processamento de pagamentos
-  - Desenvolvido com Next.js para garantir performance e boa experiência do usuário
+  - User interface for account management and payment processing
+  - Built with Next.js to ensure performance and a good user experience
 
 - **Gateway (Go)**
-  - Sistema principal de processamento de pagamentos
-  - Gerencia contas, transações e coordena o fluxo de pagamentos
-  - Publica eventos de transação no Kafka para análise de fraude
+  - Main system for payment processing
+  - Manages accounts, transactions, and coordinates the payment flow
+  - Publishes transaction events to Kafka for fraud analysis
 
 - **Apache Kafka**
-  - Responsável pela comunicação assíncrona entre API Gateway e Antifraude
-  - Garante confiabilidade na troca de mensagens entre os serviços
-  - Tópicos específicos para transações e resultados de análise
+  - Responsible for asynchronous communication between the API Gateway and the Anti-fraud service
+  - Ensures reliable message exchange between services
+  - Specific topics for transactions and analysis results
 
-- **Antifraude (Nest.js)**
-  - Consome eventos de transação do Kafka
-  - Realiza análise em tempo real para identificar possíveis fraudes
-  - Publica resultados da análise de volta no Kafka
+- **Anti-fraud Service (Nest.js)**
+  - Consumes transaction events from Kafka
+  - Performs real-time analysis to detect potential fraud
+  - Publishes analysis results back to Kafka
 
-## Fluxo de Comunicação
+## Communication Flow
 
-1. Frontend realiza requisições para a API Gateway via REST
-2. Gateway processa as requisições e publica eventos de transação no Kafka
-3. Serviço Antifraude consome os eventos e realiza análise em tempo real
-4. Resultados das análises são publicados de volta no Kafka
-5. Gateway consome os resultados e finaliza o processamento da transação
+1. The frontend sends REST requests to the API Gateway
+2. The Gateway processes the requests and publishes transaction events to Kafka
+3. The Anti-fraud service consumes the events and performs real-time analysis
+4. The analysis results are published back to Kafka
+5. The Gateway consumes the results and finalizes the transaction processing
 
-## Ordem de Execução dos Serviços
+## Service Startup Order
 
-Para executar o projeto completo, os serviços devem ser iniciados na seguinte ordem:
+To run the complete project, services must be started in the following order:
 
-1. **API Gateway (Go)** - Deve ser executado primeiro pois configura a rede Docker
-2. **Serviço Antifraude (Nest.js)** - Depende do Kafka configurado pelo Gateway
-3. **Frontend (Next.js)** - Interface de usuário que se comunica com a API Gateway
+1. **API Gateway (Go)** – Should be started first as it sets up the Docker network
+2. **Anti-fraud Service (Nest.js)** – Depends on Kafka, which is configured by the Gateway
+3. **Frontend (Next.js)** – The user interface that communicates with the API Gateway
 
-## Instruções Detalhadas
+## Detailed Instructions
 
-Cada componente do sistema possui instruções específicas de instalação e configuração em suas respectivas pastas:
+Each system component contains specific setup and configuration instructions in its respective folder:
 
-- **API Gateway**: Consulte o README na pasta `/go-gateway-api`
-- **Serviço Antifraude**: Consulte o README na pasta `/nestjs-anti-fraud` 
-- **Frontend**: Consulte o README na pasta `/gateway-fe`
+- **API Gateway**: See the README in the `/go-gateway-api` folder
+- **Anti-fraud Service**: See the README in the `/nestjs-anti-fraud` folder
+- **Frontend**: See the README in the `/gateway-fe` folder
 
-> **Importante**: É fundamental seguir a ordem de execução mencionada acima, pois cada serviço depende dos anteriores para funcionar corretamente.
+> **Important**: It's crucial to follow the startup order above, as each service depends on the previous ones to function correctly.
 
-## Pré-requisitos Gerais
+## General Prerequisites
 
-Para executar todos os componentes do projeto, você precisará ter instalado:
+To run all components of the project, you’ll need:
 
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 - Git
 
-## Regras de Negócio Importantes
+## Key Business Rules
 
-- Transações acima de R$ 10.000 são automaticamente enviadas para análise e ficam com status "pendente"
-- Transações menores são processadas imediatamente
-- A interface mostra status diferenciados por cores: verde (aprovado), amarelo (pendente), vermelho (rejeitado)
+- Transactions over R$ 10,000 are automatically sent for analysis and marked as "pending"
+- Smaller transactions are processed immediately
+- The interface displays different statuses using colors: green (approved), yellow (pending), red (rejected)

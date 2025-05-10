@@ -1,85 +1,80 @@
-# Gateway de Pagamento - API Gateway (Go)
+# Payment Gateway- API Gateway (Go)
 
-Este é o microsserviço da API Gateway desenvolvido em Go, parte do projeto Gateway de Pagamento criado durante a [Imersão Full Stack & Full Cycle](https://imersao.fullcycle.com.br/evento/). 
+This is the API Gateway microservice developed in Go, part of the Payment Gateway project.
 
-## Aviso Importante
+## About the Project
 
-Este projeto foi desenvolvido exclusivamente para fins didáticos como parte da Imersão Full Stack & Full Cycle.
+The Payment Gateway is a distributed system composed of:
+- Frontend in Next.js
+- API Gateway in Go (this repository)
+- Anti-fraud system in Nest.js
+- Apache Kafka for asynchronous communication
 
+## Current status of the project
+So far, we have implemented:
+- Setup and base structure of the project
+- Account management endpoints (creation and consultation)
+- Complete invoice system with:
+- Automatic creation and processing of payments
+- Limit validation (invoices > R$ 10,000 are pending)
+- Individual consultation and listing of invoices
+- Automatic update of account balance
 
-## Sobre o Projeto
-
-O Gateway de Pagamento é um sistema distribuído composto por:
-- Frontend em Next.js
-- API Gateway em Go (este repositório)
-- Sistema de Antifraude em Nest.js
-- Apache Kafka para comunicação assíncrona
-
-## Status atual do projeto
-Até o momento, implementamos:
-- Setup e estrutura base do projeto
-- Endpoints de gerenciamento de accounts (criação e consulta)
-- Sistema completo de faturas (invoices) com:
-  - Criação e processamento automático de pagamentos
-  - Validação de limites (faturas > R$ 10.000 ficam pendentes)
-  - Consulta individual e listagem de faturas
-  - Atualização automática de saldo da conta
-
-Funcionalidades pendentes:
-- Integração com Apache Kafka para:
-  - Envio de transações para o microsserviço de antifraude
-  - Consumo de respostas do serviço de antifraude
-- Processamento de pagamentos baseado na análise de fraude
+Pending features:
+- Integration with Apache Kafka for:
+- Sending transactions to the anti-fraud microservice
+- Consumption of responses from the anti-fraud service
+- Payment processing based on fraud analysis
 
 
-## Arquitetura da aplicação
-[Visualize a arquitetura completa aqui](https://link.excalidraw.com/readonly/Nrz6WjyTrn7IY8ZkrZHy)
+## Application architecture
+[View the full architecture here](https://link.excalidraw.com/readonly/Nrz6WjyTrn7IY8ZkrZHy)
 
-## Pré-requisitos
+## Prerequisites
 
-- [Go](https://golang.org/doc/install) 1.24 ou superior
+- [Go](https://golang.org/doc/install) 1.24 or higher
 - [Docker](https://www.docker.com/get-started)
-  - Para Windows: [WSL2](https://docs.docker.com/desktop/windows/wsl/) é necessário
+  - For Windows: [WSL2](https://docs.docker.com/desktop/windows/wsl/) it's necessary
 - [golang-migrate](https://github.com/golang-migrate/migrate)
-  - Instalação: `go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest`
-- [Extensão REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) (opcional, para testes)
+  - Installation: `go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@latest`
+- [Extensão REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) (optional, for run tests)
 
-## Setup do Projeto
+## Project Setup
 
-1. Clone o repositório:
+1. Clone the repository:
 ```bash
 git clone https://github.com/romeolacerda/payment-gateway
 cd imersao22/go-gateway
 ```
 
-2. Configure as variáveis de ambiente:
+2. Configure the environment variables:
 ```bash
 cp .env.example .env
 ```
 
-3. Inicie o banco de dados:
+3. Init the database:
 ```bash
 docker compose up -d
 ```
 
-4. Execute as migrations:
+4. Run the migrations:
 ```bash
 migrate -path db/migrations -database "postgresql://postgres:postgres@localhost:5432/gateway?sslmode=disable" up
 ```
 
-5. Acesse o container do app:
+5. Access the container of the app:
 ```bash
 docker compose exec app sh
 ```
 
-6. Execute a aplicação:
+6. Run the application:
 ```bash
 go run cmd/app/main.go
 ```
 
 ## API Endpoints
 
-### Criar Conta
+### Create account
 ```http
 POST /accounts
 Content-Type: application/json
@@ -89,16 +84,17 @@ Content-Type: application/json
     "email": "john@doe.com"
 }
 ```
-Retorna os dados da conta criada, incluindo o API Key para autenticação.
+Returns the data of the created account, including the API Key for authentication.
 
-### Consultar Conta
+### Consult Account
+
 ```http
 GET /accounts
 X-API-Key: {api_key}
 ```
-Retorna os dados da conta associada ao API Key.
+Returns the account data associated with the API Key.
 
-### Criar Fatura
+### Create Invoice
 ```http
 POST /invoice
 Content-Type: application/json
@@ -115,30 +111,30 @@ X-API-Key: {api_key}
     "cardholder_name": "John Doe"
 }
 ```
-Cria uma nova fatura e processa o pagamento. Faturas acima de R$ 10.000 ficam pendentes para análise manual.
+Creates a new invoice and processes the payment. Invoices over R$10,000 are pending manual review.
 
-### Consultar Fatura
+### Consult Invoice
 ```http
 GET /invoice/{id}
 X-API-Key: {api_key}
 ```
-Retorna os dados de uma fatura específica.
+Returns data for a specific invoice.
 
-### Listar Faturas
+### List Invoices
 ```http
 GET /invoice
 X-API-Key: {api_key}
 ```
-Lista todas as faturas da conta.
+Lists all invoices for the account.
 
-## Testando a API
+## Testing the API
 
-O projeto inclui um arquivo `test.http` que pode ser usado com a extensão REST Client do VS Code. Este arquivo contém:
-- Variáveis globais pré-configuradas
-- Exemplos de todas as requisições
-- Captura automática do API Key após criação da conta
+The project includes a `test.http` file that can be used with the VS Code REST Client extension. This file contains:
+- Pre-configured global variables
+- Examples of all requests
+- Automatic API Key capture after account creation
 
-Para usar:
-1. Instale a extensão REST Client no VS Code
-2. Abra o arquivo `test.http`
-3. Clique em "Send Request" acima de cada requisição 
+To use:
+1. Install the REST Client extension in VS Code
+2. Open the `test.http` file
+3. Click "Send Request" above each request

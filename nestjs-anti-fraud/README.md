@@ -1,145 +1,138 @@
-# Gateway de Pagamento - Microserviço Anti-Fraude (NestJS)
+# Payment Gateway - Anti-Fraud Microservice (NestJS)
 
-Este é o microsserviço de Anti-Fraude desenvolvido em NestJS, parte do projeto Gateway de Pagamento criado durante a [Imersão Full Stack & Full Cycle](https://imersao.fullcycle.com.br).
+This is the Anti-Fraud microservice developed in NestJS
 
-## Aviso Importante
+## About the Project
 
-Este projeto foi desenvolvido exclusivamente para fins didáticos como parte da Imersão Full Stack & Full Cycle.
+The Payment Gateway is a distributed system composed of:
+- Frontend in Next.js
+- API Gateway in Go
+- Anti-Fraud System in Nest.js (this repository)
+- Apache Kafka for asynchronous communication
 
-## Sobre o Projeto
+## Application architecture
+[View the complete architecture here](https://link.excalidraw.com/readonly/Nrz6WjyTrn7IY8ZkrZHy)
 
-O Gateway de Pagamento é um sistema distribuído composto por:
-- Frontend em Next.js
-- API Gateway em Go
-- Sistema de Antifraude em Nest.js (este repositório)
-- Apache Kafka para comunicação assíncrona
-
-## Arquitetura da aplicação
-[Visualize a arquitetura completa aqui](https://link.excalidraw.com/readonly/Nrz6WjyTrn7IY8ZkrZHy)
-
-## Pré-requisitos
+## Prerequisites
 
 - [Docker](https://www.docker.com/get-started)
-  - Para Windows: [WSL2](https://docs.docker.com/desktop/windows/wsl/) é necessário
-- [Extensão REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) (opcional, para testes via api.http)
+  - For Windows: [WSL2](https://docs.docker.com/desktop/windows/wsl/) it's necessary
+- [Extension REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client) (optionl, for run tests with api.http)
 
-## Importante!
+## Impportant!
 
-⚠️ **É necessário executar primeiro o serviço go-gateway** antes deste projeto, pois este microserviço utiliza a rede Docker criada pelo go-gateway.
+⚠️ **You need to run the go-gateway-api service first** before this project, as this microservice uses the Docker network created by go-gateway.
 
-## Setup do Projeto
+## Porject setup
 
-1. Clone o repositório:
+1. Clone the repository:
 ```bash
 git clone https://github.com/romeolacerda/payment-gateway
 cd payment-gateway/nestjs-anti-fraud
 ```
 
-2. Verifique se o serviço go-gateway já está em execução
+2. Check if the go-gateway service is already running
 
-3. Inicie os serviços com Docker Compose:
+3. Start the services with Docker Compose:
 ```bash
 docker compose up -d
 ```
 
-4. Execute as migrations do Prisma dentro do container:
+4. Run Prisma migrations inside the container:
 ```bash
 docker compose exec nestjs bash
 npx prisma migrate dev
 ```
 
-## Executando a aplicação
+## Running the application
 
-Você pode rodar a aplicação em dois modos diferentes dentro do container:
+You can run the application in two different modes inside the container:
 
-### 1. API REST + Consumidor Kafka (padrão)
+### 1. API REST + Consumer Kafka (standard)
 ```bash
 docker compose exec nestjs bash
 npm run start:dev
 ```
 
-### 2. Apenas o Consumidor Kafka
+### 2. Only the Kafka
 ```bash
 docker compose exec nestjs bash
 npm run start:dev -- --entryFile cmd/kafka.cmd
 ```
 
-## Estrutura do Projeto
+## Project Structure
+The project uses:
+- NestJS as a framework
+- Prisma ORM for accessing the PostgreSQL database
+- Integration with Apache Kafka for asynchronous processing
+- TypeScript for static typing
 
-O projeto usa:
-- NestJS como framework
-- Prisma ORM para acesso ao banco de dados PostgreSQL
-- Integração com Apache Kafka para processamento assíncrono
-- TypeScript para tipagem estática
+## Communication with Kafka
 
-## Comunicação via Kafka
+The Anti-Fraud service communicates with the API Gateway via Apache Kafka:
 
-O serviço de Anti-Fraude se comunica com o API Gateway via Apache Kafka:
+### Event consumption
+- **Topic**: `pending_transactions`
+- **Format**: JSON with full transaction data
 
-### Consumo de eventos
-- **Tópico**: `pending_transactions`
-- **Formato**: JSON com os dados completos da transação
+### Event production
+- **Topic**: `transactions_result`
+- **Format**: JSON with the analysis result and risk score
 
-### Produção de eventos
-- **Tópico**: `transactions_result`
-- **Formato**: JSON com o resultado da análise e score de risco
+## Analysis Rules
 
-## Regras de Análise
+The system applies rules to detect possible fraud, such as:
 
-O sistema aplica regras para detectar possíveis fraudes, como:
+1. **Transaction amount**:
+- Transactions above certain thresholds receive a higher risk score
 
-1. **Valor da transação**:
-   - Transações acima de determinados limites recebem pontuação de risco mais alta
+2. **Transaction frequency**:
+- Many transactions in a short period of time increase risk
 
-2. **Frequência de transações**:
-   - Muitas transações em curto período aumentam o risco
-
-3. **Comportamento do cartão**:
-   - Uso de múltiplos cartões com padrões suspeitos
+3. **Card behavior**:
+- Use of multiple cards with suspicious patterns
 
 ## API Endpoints
 
-O projeto inclui um arquivo `api.http` que pode ser usado com a extensão REST Client do VS Code para testar os endpoints da API:
+The project includes an `api.http` file that can be used with the VS Code REST Client extension to test API endpoints:
 
-1. Instale a extensão REST Client no VS Code
-2. Abra o arquivo `api.http`
-3. Clique em "Send Request" acima de cada requisição
+1. Install the REST Client extension in VS Code
+2. Open the `api.http` file
+3. Click "Send Request" above each request
 
-Os endpoints disponíveis estão documentados neste arquivo para fácil teste e referência.
+The available endpoints are documented in this file for easy testing and reference.
 
-## Acesso ao Banco de Dados
+## Database access
 
-O PostgreSQL do serviço de Anti-Fraude está configurado para evitar conflitos com o banco do go-gateway.
+The PostgreSQL of the Anti-Fraud service is configured to avoid conflicts with the go-gateway database.
 
-Para acessar o Prisma Studio (interface visual do banco de dados):
+To access Prisma Studio (visual database interface):
 
 ```bash
 docker compose exec nestjs bash
 npx prisma studio
 ```
 
-## Logs e Monitoramento
+## Logs and Monitoring
 
-Para visualizar os logs do serviço:
+To view service logs:
 
 ```bash
-# Logs do serviço NestJS
 docker logs -f nestjs-anti-fraud-nestjs-1
 ```
 
-## Desenvolvimento
+## Development
 
-Para desenvolvimento, você pode executar comandos dentro do container:
+For development, you can run commands inside the container:
 
 ```bash
-# Acessar o shell do container
 docker compose exec nestjs bash
 
-# Exemplo de comandos disponíveis dentro do container
-npm run start:dev  # Iniciar em modo de desenvolvimento
-npm run start:dev -- --entryFile cmd/kafka.cmd  # Iniciar apenas o consumidor Kafka
-npx prisma studio  # Interface visual do banco de dados
-npx prisma migrate dev  # Executar migrations
+# Example of commands available inside the container
+npm run start:dev # Start in development mode
+npm run start:dev -- --entryFile cmd/kafka.cmd # Start only the Kafka consumer
+npx prisma studio # Visual database interface
+npx prisma migrate dev # Run migrations
 ```
 
-Para modificar o código, edite os arquivos localmente - eles são montados como volume no container Docker, que reinicia automaticamente ao detectar mudanças.
+To modify the code, edit the files locally - they are mounted as a volume in the Docker container, which automatically restarts when it detects changes.
